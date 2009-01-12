@@ -19,7 +19,7 @@ class SageDownloadGenerator < Rails::Generator::Base
       m.migration_template 'migration.rb', 'db/migrate',
                            :assigns => { :customer_model => @customer_model, :order_model => @order_model,
                            :customer_join_table => @customer_join_table, :customer_model_table => @customer_model_table,
-                           :order_join_table => @order_join_table, :order_model_table => @customer_model_table },
+                           :order_join_table => @order_join_table, :order_model_table => @order_model_table },
                            :migration_file_name => "create_sage_downloads"
       m.template 'sage_download.rb', File.join('app', 'models', 'sage_download.rb')
       m.template 'sage_import.rb', File.join('app', 'models', 'sage_import.rb')

@@ -1,4 +1,4 @@
-class AddSageDownloadModel < ActiveRecord::Migration
+class CreateSageDownloads < ActiveRecord::Migration
 
   def self.up
     create_table :sage_downloads do |t|
@@ -11,12 +11,12 @@ class AddSageDownloadModel < ActiveRecord::Migration
       t.timestamps
     end
     
-    create_table <%= order_join_table %>, :id => false do |t|
+    create_table '<%= order_join_table %>', :id => false do |t|
       t.integer 'sage_download_id'
       t.integer '<%= order_model.underscore %>_id'
     end
     
-    create_table <%= customer_join_table %>, :id => false do |t|
+    create_table '<%= customer_join_table %>', :id => false do |t|
       t.integer 'sage_download_id'
       t.integer '<%= customer_model.underscore %>_id'
     end
