@@ -1,1 +1,11 @@
+# Add SageUpload model to parse and store uploaded xml - with generator
+# Add a SageController generator - should test for presence of Upload and Download models and only include relevant parts
+# Flesh out parsing code for SageImport - how it pulls out relevant orders/customers and saves the association
+# Add metacode methods to ActiveRecord with option to supply custom field 
+## sage_invoice class method
+## sage_sales_order class method
+## sage_customer class method
+# Write readme file explaining how to use all this
+# Upload to GitHub
+# Figure someway of handling testing
 
