@@ -3,7 +3,7 @@ class SageImport < ActiveRecord::Base
   has_many :<%= order_type %>, :class_name => '<%= order_model %>'
   has_many :customers, :class_name => '<%= customer_model %>'
 
-  :before_save parse_uploaded_xml
+  before_save :parse_uploaded_xml
   
   protected
     
