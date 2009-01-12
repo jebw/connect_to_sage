@@ -11,7 +11,6 @@ class AddSageDownloadModel < ActiveRecord::Migration
       t.timestamps
     end
     
-    #create join table between orders and sage_downloads
     create_table <%= order_join_table %>, :id => false do |t|
       t.integer 'sage_download_id'
       t.integer '<%= order_model.underscore %>_id'
