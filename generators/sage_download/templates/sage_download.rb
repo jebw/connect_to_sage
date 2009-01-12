@@ -3,7 +3,7 @@ class SageDownload < ActiveRecord::Base
   has_and_belongs_to_many :customers, :class_name => '<%= customer_model %>'
   
   before_create :associate_models
-  before_save :write_xml
+  before_create :store_xml
 
   def to_xml(options)
     read_attribute :xml
@@ -12,11 +12,15 @@ class SageDownload < ActiveRecord::Base
   protected
     
     def associate_models
-      customers = <%= customer_model %>.all(:conditions => { :sage_import_id => nil })
-      <%= order_type %> = <%= order_model %>.all(:conditions => { :sage_import_id => nil })
+      customers << <%= customer_model %>.all(:conditions => { :sage_import_id => nil })
+      <%= order_type %> << <%= order_model %>.all(:conditions => { :sage_import_id => nil })
     end
     
-    def write_xml
+    def store_xml
+      write_attribute :xml, create_xml
+    end
+    
+    def create_xml
       x = Builder::XmlMarkup.new(:indent => 2)
       x.instruct!
       
