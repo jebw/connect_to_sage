@@ -8,4 +8,5 @@
 # Write readme file explaining how to use all this
 # Upload to GitHub
 # Figure someway of handling testing
+# Make InvalidFormatErrors give more useful info about whats missing from the map
 
