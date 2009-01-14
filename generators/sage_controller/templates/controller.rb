@@ -11,7 +11,8 @@ class <%= controller_name %> < ApplicationController
   end
   
   def import
-    # IMPORT CODE
+    SageImport.create!(:xml => request.body.read)
+    render :nothing => true
   end
 
   private
