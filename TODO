@@ -9,4 +9,4 @@
 # Upload to GitHub
 # Figure someway of handling testing
 # Make InvalidFormatErrors give more useful info about whats missing from the map
-
+# Figure way of controlling ordering of XML fields in download - not sure if Connect still cares, think it used to be a problem
