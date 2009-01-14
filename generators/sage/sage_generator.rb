@@ -1,6 +1,6 @@
 class SageGenerator < Rails::Generator::Base
   attr_accessor :controller_name, :controller_file_name, :controller_url, :password,
-                :customer_model, :order_model
+                :order_type, :customer_model, :order_model
   
   def initialize(runtime_args, runtime_options = {})
     super
@@ -24,13 +24,17 @@ class SageGenerator < Rails::Generator::Base
   
   def manifest
     recorded_session = record do |m|
-      m.migration_template 'migration.rb', 'db/migrate',
-                           :assigns => { :customer_model => @customer_model, :order_model => @order_model,
-                           :customer_join_table => @customer_join_table, :customer_model_table => @customer_model_table,
-                           :order_join_table => @order_join_table, :order_model_table => @order_model_table },
-                           :migration_file_name => "create_sage_models"
-      m.template 'sage_download.rb', File.join('app', 'models', 'sage_download.rb')
-      m.template 'sage_import.rb', File.join('app', 'models', 'sage_import.rb')
+      unless options[:no_download] and options[:no_upload]
+        m.migration_template 'migration.rb', 'db/migrate',
+                             :assigns => { :customer_model => @customer_model, :order_model => @order_model,
+                             :customer_join_table => @customer_join_table, :customer_model_table => @customer_model_table,
+                             :order_join_table => @order_join_table, :order_model_table => @order_model_table },
+                             :migration_file_name => "create_sage_models"
+      end
+      unless options[:no_download]
+        m.template 'sage_download.rb', File.join('app', 'models', 'sage_download.rb')
+        m.template 'sage_import.rb', File.join('app', 'models', 'sage_import.rb')
+      end
       m.template 'controller.rb', File.join('app', 'controllers', "#{@controller_file_name}.rb")
     end
     

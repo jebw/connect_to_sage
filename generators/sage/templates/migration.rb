@@ -1,6 +1,7 @@
-class CreateSageDownloads < ActiveRecord::Migration
+class CreateSageModels < ActiveRecord::Migration
 
   def self.up
+    <% unless options[:no_download] %>
     create_table :sage_downloads do |t|
       t.text :xml
       t.timestamps
@@ -23,9 +24,11 @@ class CreateSageDownloads < ActiveRecord::Migration
     
     add_column :<%= order_model_table %>, :sage_import_id, :integer
     add_column :<%= customer_model_table %>, :sage_import_id, :integer
+    <% end %>
   end
   
   def self.down
+    <% unless options[:no_download] %>
     remove_column :<%= customer_model_table %>, :sage_import_id
     remove_column :<%= order_model_table %>, :sage_import_id
     
@@ -34,6 +37,7 @@ class CreateSageDownloads < ActiveRecord::Migration
   
     drop_table :sage_downloads
     drop_table :sage_imports
+    <% end %>
   end
 
 end
