@@ -1,5 +1,6 @@
 class SageGenerator < Rails::Generator::Base
-  attr_accessor :controller_name, :controller_file_name, :controller_url, :password
+  attr_accessor :controller_name, :controller_file_name, :controller_url, :password,
+                :customer_model, :order_model
   
   def initialize(runtime_args, runtime_options = {})
     super
@@ -8,11 +9,28 @@ class SageGenerator < Rails::Generator::Base
     @controller_name = @controller_url.camelize + 'Controller'
     @controller_file_name = @controller_name.underscore
     
+    @order_type = options[:sales_orders] ? 'sales_orders' : 'invoices'
+    
+    @customer_model = (args.shift || find_customer_model).camelize.singularize
+    @customer_model_table = @customer_model.underscore.pluralize
+    @customer_join_table = [ 'sage_downloads', @customer_model_table ].sort.join('_')
+    
+    @order_model = (args.shift || find_order_model).camelize.singularize
+    @order_model_table = @order_model.underscore.pluralize
+    @order_join_table = [ 'sage_downloads', @order_model_table ].sort.join('_')
+    
     @password = generate_password
   end
   
   def manifest
     recorded_session = record do |m|
+      m.migration_template 'migration.rb', 'db/migrate',
+                           :assigns => { :customer_model => @customer_model, :order_model => @order_model,
+                           :customer_join_table => @customer_join_table, :customer_model_table => @customer_model_table,
+                           :order_join_table => @order_join_table, :order_model_table => @order_model_table },
+                           :migration_file_name => "create_sage_models"
+      m.template 'sage_download.rb', File.join('app', 'models', 'sage_download.rb')
+      m.template 'sage_import.rb', File.join('app', 'models', 'sage_import.rb')
       m.template 'controller.rb', File.join('app', 'controllers', "#{@controller_file_name}.rb")
     end
     
@@ -54,5 +72,20 @@ class SageGenerator < Rails::Generator::Base
 			1.upto(pass_length) { |i| generate_pass << char_list[rand(char_list.size)] }
 			return generate_pass
     end
+    
+    def find_customer_model
+      return 'Customer' if File.exist?(File.join('app', 'models', 'customer.rb'))
+      return 'User' if File.exist?(File.join('app', 'models', 'user.rb'))
+      raise MissingModel, "Specify a Customer Model, none found"
+    end
+    
+    def find_order_model
+      return 'Order' if File.exist?(File.join('app', 'models', 'order.rb'))
+      raise MissingModel, "Specify an Order Model, none found"
+    end
 
 end
+
+class MissingModel < RuntimeError
+end
+
