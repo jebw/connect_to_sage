@@ -5,5 +5,5 @@
 # Figure way of controlling ordering of XML fields in download - not sure if Connect still cares, think it used to be a problem
 # Finish mapping fields for ActiveRecord methods
 # Figure how to handle downloading products from webapp to sage
-# Figure how I'm matching up customers to mark as downloaded in SageImport
 # Deal with uploaded images
+# Improve feedback at generate time

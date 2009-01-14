@@ -20,7 +20,7 @@ module ConnectToSage
         @@i_map_built || build_invoice_map
       
         xml.Invoice do
-          write_sage_xml(@@i_map, xml)
+          to_sage_xml(@@i_map, xml)
         end
       end
       
