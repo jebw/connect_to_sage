@@ -1,0 +1,7 @@
+./script/generate sage [CONTROLLERNAME] [CUSTOMERMODEL] [ORDERMODEL]
+
+Options:
+  --no-upload     Only generate code for downloading to Sage Line 50
+  --no-download   Only generate code for uploading from Sage Line 50
+  --sales-orders  Generate Sales Orders in Sage instead of Invoices
+

@@ -1,11 +1,9 @@
 # Add SageUpload model to parse and store uploaded xml - with generator
-# Add a SageController generator - should test for presence of Upload and Download models and only include relevant parts
-# Write out parsing code for SageImport - how it pulls out relevant orders/customers and saves the association
 # Write readme file explaining how to use all this
 # Upload to GitHub
 # Figure someway of handling testing
-# Make InvalidFormatErrors give more useful info about whats missing from the map
 # Figure way of controlling ordering of XML fields in download - not sure if Connect still cares, think it used to be a problem
 # Finish mapping fields for ActiveRecord methods
-# Change sage_controller generator to generate random password for http auth and to tell the user what it is
 # Figure how to handle downloading products from webapp to sage
+# Figure how I'm matching up customers to mark as downloaded in SageImport
+# Merge up generators
