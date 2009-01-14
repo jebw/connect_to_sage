@@ -63,9 +63,7 @@ module ConnectToSage
       @@c_map = attr_map
       @@c_map_built = false
       
-      include AttributeMapper      
-      has_and_belongs_to_many :sage_downloads
-      belongs_to :sage_import
+      include AttributeMapper
       
       define_method "to_customer_xml" do |xml|
         @@c_map_built || build_customer_map

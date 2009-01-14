@@ -1,6 +1,5 @@
 class SageDownload < ActiveRecord::Base
   has_and_belongs_to_many :<%= order_type %>, :class_name => '<%= order_model %>'
-  has_and_belongs_to_many :customers, :class_name => '<%= customer_model %>'
   
   before_create :associate_models
   before_create :store_xml
@@ -12,15 +11,23 @@ class SageDownload < ActiveRecord::Base
   protected
     
     def associate_models
-      customers << <%= customer_model %>.all(:conditions => { :sage_import_id => nil })
-      <%= order_type %> << <%= order_model %>.all(:conditions => { :sage_import_id => nil })
+      <%= order_type %> << <%= order_model %>.all(:conditions => { :sage_import_id => nil }, :limit => 1000)
     end
     
     def store_xml
       write_attribute :xml, create_xml
     end
     
+    def list_customers
+      customers = []
+      customers += invoices.map { |i| i.<%= customer_model.underscore %> } if self.methods.include?('invoices')
+      customers += sales_orders.map { |so| so.<%= customer_model.underscore %> } if self.methods.include?('sales_orders')
+      customers.uniq
+    end
+    
     def create_xml
+      customers = list_customers
+    
       x = Builder::XmlMarkup.new(:indent => 2)
       x.instruct!
       
