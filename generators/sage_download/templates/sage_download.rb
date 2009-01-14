@@ -25,7 +25,7 @@ class SageDownload < ActiveRecord::Base
       x.instruct!
       
       x.Company("xmlns:xsd" => "http://www.w3.org/2001/XMLSchema", 
-                  "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance") do
+                "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance") do
         
         unless customers.empty?
           x.Customers do
