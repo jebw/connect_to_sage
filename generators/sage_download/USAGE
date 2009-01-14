@@ -1,1 +1,0 @@
-./script/generate sage_download (invoice || sales_order) CUSTOMER_MODEL ORDER_MODEL

@@ -6,4 +6,4 @@
 # Finish mapping fields for ActiveRecord methods
 # Figure how to handle downloading products from webapp to sage
 # Figure how I'm matching up customers to mark as downloaded in SageImport
-# Merge up generators
+# Deal with uploaded images
