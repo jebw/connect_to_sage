@@ -50,7 +50,7 @@ module ConnectToSage
       define_method "build_sales_order_map" do
         map_attribute(@@so_map, 'Id')
         map_attribute(@@so_map, 'Forename')
-        map_attribute(@@so_map, 'Surname') || raise(InvalidFormatError)
+        map_attribute(@@so_map, 'Surname') || unmapped_attribute('Surname')
         map_attribute(@@so_map, 'RandomField')
         map_attribute(@@so_map, 'Desc')
         
@@ -86,6 +86,11 @@ module ConnectToSage
   
   module AttributeMapper
     
+    def unmapped_attribute(attribute)
+      raise UnmappedAttributeError, 
+        "#{self.class.to_s} does not have a #{attribute} method, add one or add it to the attribute map"
+    end
+    
     def map_attribute(attr_map, attribute, alternatives = [])
       return true if attr_map.has_key?(attribute)
       
@@ -117,7 +122,7 @@ module ConnectToSage
     
   end
   
-  class InvalidFormatError < RuntimeError
+  class UnmappedAttributeError < RuntimeError
   end
   
 end
