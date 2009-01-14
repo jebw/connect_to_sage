@@ -5,7 +5,7 @@ class SageDownload < ActiveRecord::Base
   before_create :associate_models
   before_create :store_xml
 
-  def to_xml(options)
+  def to_xml(options = {})
     read_attribute :xml
   end
   
