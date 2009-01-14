@@ -38,8 +38,11 @@ class SageControllerGenerator < Rails::Generator::Base
       "Usage: #{$0} sage_controller [CONTROLLERNAME]"
     end
     
-    def generate_password(length = 8)
-      'foobar'
+    def generate_password(pass_length = 8)
+      char_list = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+			generate_pass = ""
+			1.upto(pass_length) { |i| generate_pass << char_list[rand(char_list.size)] }
+			return generate_pass
     end
 
 end
