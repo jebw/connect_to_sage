@@ -1,13 +1,65 @@
-ConnectToSage
-=============
+h1. Connect to Sage
 
-Introduction goes here.
+Version 0.1 - 16 January 2009
+
+h2. Getting started
+
+# Run the generator
+# Add sage_invoice (or sage_sales_order) to the start of you Order model
+# Add sage_customer to the start of your Customer model
+# Edit the generated SageImport model to map fields as appropriate
+
+h2. The Generator
+
+This plugin should (hopefully) make it easy to hook up your Rails application 
+to Sages Line 50 accountancy software, via Internetware's commercial Connect #
+product.
+
+To get started run
+
+<code>
+  script/generate sage [ControllerName] [CustomerModelName] [OrderModelName]
+</code>
+
+eg.
+
+<code>
+  script/generate sage Sage Shopper Cart
+</code>
+
+All parameters are optional - if the Order model is omitted, then the 
+generator will try to find an Order model - if it can't then generator will
+just raise an error. Likewise, it will test for Customer, then User as 
+CustomerModelName's, the controller will default to Sage if a ControllerName
+is not supplied.
+
+The generator takes 3 options
+--download-only - Generate stub code for the upload URL which does nothing
+--upload-only   - Generate stub code for the download and import URL which only
+  sends down an empty xml file
+--sales-orders will generate Sales Orders in Sage instead of Invoices
+  (if you need to change to this later on then all you need to do is edit the
+SageDownload model and change
+
+  has_and_belongs_to_many :invoices
+to
+  has_and_belongs_to_many :sales_orders
+
+Edit the SageImport model and change
+
+  has_many :invoices
+to
+  has_many :sales_orders
+  
+And edit your Order model and change
+
+  sage_invoice
+to
+  sage_sales_order
+
+h2. Downloading data
 
 
-Example
-=======
-
-Example goes here.
 
 
-Copyright (c) 2009 [name of plugin creator], released under the MIT license
+Copyright (c) 2009 Jeremy Wilkins, released under the MIT license

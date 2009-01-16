@@ -59,7 +59,7 @@ class SageGenerator < Rails::Generator::Base
   protected
   
     def banner
-      "Usage: #{$0} sage_controller [CONTROLLERNAME] [CUSTOMERMODEL] [ORDERMODEL]\n"
+      "Usage: #{$0} sage_controller [ControllerName] [CustomerModelName] [OrderModelName]"
     end
     
     def add_options!(opt)

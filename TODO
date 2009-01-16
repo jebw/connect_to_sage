@@ -7,3 +7,4 @@
 # Figure how to handle downloading products from webapp to sage
 # Deal with uploaded images
 # Improve feedback at generate time
+# Change --download-only and --upload-only to generate stubs in the controller rather then nothing at all

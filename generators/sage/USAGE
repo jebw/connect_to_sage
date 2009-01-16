@@ -1,4 +1,4 @@
-./script/generate sage [CONTROLLERNAME] [CUSTOMERMODEL] [ORDERMODEL]
+./script/generate sage [ControllerName] [CustomerModelName] [OrderModelName]
 
 Options:
   --no-upload     Only generate code for downloading to Sage Line 50
