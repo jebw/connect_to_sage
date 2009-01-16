@@ -9,18 +9,56 @@ module ConnectToSage
   module ClassMethods
   
     def sage_invoice(attr_map = {})
-      @@i_map = attr_map
-      @@i_map_built = false
+      @@invoice_map = attr_map
       
       include AttributeMapper      
       has_and_belongs_to_many :sage_downloads
       belongs_to :sage_import
       
       define_method "to_invoice_xml" do |xml|
-        @@i_map_built || build_invoice_map
-      
         xml.Invoice do
-          to_sage_xml(@@i_map, xml)
+          xml.Id invoice_map(:id)
+#          xml.CustomerId invoice_map(:customer_id)
+#          xml.InvoiceNumber invoice_map(:invoice_number) rescue NoMethodError
+#          xml.CustomerOrderNumber invoice_map(:customer_order_number) rescue NoMethodError
+#          xml.AccountReference invoice_map(:account_reference) rescue NoMethodError
+          xml.OrderNumber invoice_map(:order_number, :id)# rescue NoMethodError
+#          xml.ForeignRate invoice_map(:foreign_rate) rescue NoMethodError
+#          xml.Currency invoice_map(:currency) rescue NoMethodError
+#          xml.Notes1 invoice_map(:notes1) rescue NoMethodError
+#          xml.CurrencyUsed invoice_map(:currency_used) rescue NoMethodError
+#          xml.InvoiceDate invoice_map(:invoice_date) rescue NoMethodError
+#          xml.InvoiceType invoice_map(:invoice_type) rescue NoMethodError
+#          xml.Courier invoice_map(:courier) rescue NoMethodError
+#          xml.SettlementDays invoice_map(:settlement_days) rescue NoMethodError
+#          xml.SettlementDiscount invoice_map(:settlement_discount) rescue NoMethodError
+#          xml.GlobalTaxCode invoice_map(:global_tax_code) rescue NoMethodError
+#          xml.GlobalDepartment invoice_map(:global_department) rescue NoMethodError
+#          xml.PaymentAmount invoice_map(:payment_amount) rescue NoMethodError
+        end
+      end
+      
+      define_method "invoice_map" do |*alternatives|
+        attribute = alternatives.first
+        if @@invoice_map.has_key?(attribute)
+          return process_attribute(@@invoice_map[attribute])
+        end
+
+        alternatives.reject! { |a| a.is_a?(Symbol) and not methods.include?(a.to_s) }
+        if alternatives.empty?
+          __send__(attribute)
+        else
+          process_attribute(alternatives.first)
+        end
+      end
+      
+      define_method "process_attribute" do |attribute|
+        if attribute.is_a?(Symbol)
+          __send__(attribute)
+        elsif attribute.is_a?(Proc)
+          attribute.call
+        else
+          attribute
         end
       end
       
