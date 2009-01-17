@@ -27,7 +27,7 @@ module ConnectToSage
           xml.Currency invoice_map(:currency) rescue NoMethodError
           xml.Notes1 invoice_map(:notes1) rescue NoMethodError
           xml.CurrencyUsed invoice_map(:currency_used) rescue NoMethodError
-          xml.InvoiceDate invoice_map(:invoice_date) rescue NoMethodError
+          xml.InvoiceDate invoice_map(:invoice_date, :created_at) rescue NoMethodError
           xml.InvoiceType invoice_map(:invoice_type) rescue NoMethodError
           xml.Courier invoice_map(:courier) rescue NoMethodError
           xml.SettlementDays invoice_map(:settlement_days) rescue NoMethodError
@@ -137,7 +137,7 @@ module ConnectToSage
         return process_attribute(attr_map[attribute])
       end
       
-      alternatives.reject! { |a| a.is_a?(Symbol) and not methods.include?(a.to_s) }
+      alternatives.reject! { |a| a.is_a?(Symbol) and not has_method?(a) }
       if alternatives.empty?
         __send__(attribute)
       else
@@ -146,13 +146,19 @@ module ConnectToSage
     end
     
     def process_attribute(attribute)
-      if attribute.is_a?(Symbol)
+      result = if attribute.is_a?(Symbol)
         __send__(attribute)
       elsif attribute.is_a?(Proc)
         attribute.call
       else
         attribute
       end
+      
+      result.methods.include?('xmlschema') ? result.xmlschema : result
+    end
+    
+    def has_method?(method_name)
+      methods.include?(method_name.to_s)
     end
     
   end
