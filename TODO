@@ -2,9 +2,10 @@
 # Write readme file explaining how to use all this
 # Upload to GitHub
 # Figure someway of handling testing
-# Figure way of controlling ordering of XML fields in download - not sure if Connect still cares, think it used to be a problem
 # Finish mapping fields for ActiveRecord methods
 # Figure how to handle downloading products from webapp to sage
 # Deal with uploaded images
 # Improve feedback at generate time
 # Change --download-only and --upload-only to generate stubs in the controller rather then nothing at all
+# Make Proc objects in process_attribute execute in the context of the model
+# Split code for finding customers in generated controller out from generating the xml

@@ -57,7 +57,11 @@ module ConnectToSage
       
       define_method "to_invoice_address_xml" do |xml|
         @sage_xml_builder ||= xml
-        xml.InvoiceAddress "This is an Address"
+        xml.AddressLine1 invoice_address_map(:address_line_1)
+        xml.AddressLine2 invoice_address_map(:address_line_2)
+        xml.Town invoice_address_map(:town)
+        xml.County invoice_address_map(:county)
+        xml.Postcode invoice_address_map(:postcode)
       end
       
       define_method "invoice_address_map" do |*alternatives|
@@ -71,7 +75,11 @@ module ConnectToSage
       
       define_method "to_invoice_delivery_address_xml" do |xml|
         @sage_xml_builder ||= xml
-        xml.Foo 'bar'
+        xml.AddressLine1 invoice_delivery_address_map(:address_line_1)
+        xml.AddressLine2 invoice_delivery_address_map(:address_line_2)
+        xml.Town invoice_delivery_address_map(:town)
+        xml.County invoice_delivery_address_map(:county)
+        xml.Postcode invoice_delivery_address_map(:postcode)
       end
       
       define_method "invoice_delivery_address_map" do |*alternatives|
@@ -171,6 +179,8 @@ module ConnectToSage
       if attr_map.has_key?(attribute)
         return process_attribute(attr_map[attribute])
       end
+      
+      alternatives.map! { |a| "#{attr_map[:prefix]}#{a.to_s}#{attr_map[:suffix]}".to_sym}
       
       alternatives.reject! { |a| a.is_a?(Symbol) and not has_method?(a) }
       if alternatives.empty?
