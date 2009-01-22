@@ -29,6 +29,12 @@ module ConnectToSage
           xml.CurrencyUsed invoice_map(:currency_used) rescue NoMethodError
           xml.InvoiceDate invoice_map(:invoice_date, :created_at) rescue NoMethodError
           xml.InvoiceType invoice_map(:invoice_type) rescue NoMethodError
+          xml.InvoiceAddress do
+            invoice_map(:invoice_address, :to_invoice_address_xml) rescue NoMethodError
+          end
+          xml.InvoiceDeliveryAddress do
+            invoice_map(:invoice_delivery_address, :to_invoice_delivery_address_xml) rescue NoMethodError
+          end
           xml.Courier invoice_map(:courier) rescue NoMethodError
           xml.SettlementDays invoice_map(:settlement_days) rescue NoMethodError
           xml.SettlementDiscount invoice_map(:settlement_discount) rescue NoMethodError
