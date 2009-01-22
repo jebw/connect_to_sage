@@ -31,7 +31,7 @@ module ConnectToSage
           xml.InvoiceDate invoice_map(:invoice_date, :created_at) rescue NoMethodError
           xml.InvoiceType invoice_map(:invoice_type) rescue NoMethodError
           xml.InvoiceAddress do
-            invoice_map(:invoice_address, :to_invoice_address_xml) rescue NoMethodError
+            invoice_map(:invoice_address)
           end
           xml.InvoiceDeliveryAddress do
             invoice_map(:invoice_delivery_address, :to_invoice_delivery_address_xml) rescue NoMethodError
@@ -182,7 +182,12 @@ module ConnectToSage
     
     def process_attribute(attribute)
       result = if attribute.is_a?(Symbol)
-        /^to_.*_xml$/ =~ attribute.to_s ? __send__(attribute, @sage_xml_builder) : __send__(attribute)
+        r = (/^to_.*_xml$/ =~ attribute.to_s ? __send__(attribute, @sage_xml_builder) : __send__(attribute))
+        if r.kind_of?(ActiveRecord::Base) and r.methods.include?("to_#{attribute.to_s}_xml")
+          r.__send__("to_#{attribute.to_s}_xml", @sage_xml_builder)
+        else
+          r
+        end
       elsif attribute.is_a?(Proc)
         attribute.call
       else
