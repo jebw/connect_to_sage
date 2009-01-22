@@ -16,6 +16,7 @@ module ConnectToSage
       belongs_to :sage_import
       
       define_method "to_invoice_xml" do |xml|
+        @sage_xml_builder ||= xml
         xml.Invoice do
           xml.Id invoice_map(:id)
           xml.CustomerId invoice_map(:customer_id)
@@ -48,6 +49,34 @@ module ConnectToSage
         attribute_map(@@invoice_map, alternatives)
       end
       
+    end
+    
+    def sage_invoice_address(attr_map = {})
+      @@invoice_address_map = attr_map
+      include AttributeMapper
+      
+      define_method "to_invoice_address_xml" do |xml|
+        @sage_xml_builder ||= xml
+        xml.InvoiceAddress "This is an Address"
+      end
+      
+      define_method "invoice_address_map" do |*alternatives|
+        attribute_map(@@invoice_address_map, alternatives)
+      end
+    end
+    
+    def sage_invoice_delivery_address(attr_map = {})
+      @@invoice_delivery_address_map = attr_map
+      include AttributeMapper
+      
+      define_method "to_invoice_delivery_address_xml" do |xml|
+        @sage_xml_builder ||= xml
+        xml.Foo 'bar'
+      end
+      
+      define_method "invoice_delivery_address_map" do |*alternatives|
+        attribute_map(@@invoice_delivery_address_map, alternatives)
+      end
     end
     
     def sage_sales_order(attr_map = {})
@@ -153,7 +182,7 @@ module ConnectToSage
     
     def process_attribute(attribute)
       result = if attribute.is_a?(Symbol)
-        __send__(attribute)
+        /^to_.*_xml$/ =~ attribute.to_s ? __send__(attribute, @sage_xml_builder) : __send__(attribute)
       elsif attribute.is_a?(Proc)
         attribute.call
       else
