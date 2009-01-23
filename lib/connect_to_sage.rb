@@ -177,7 +177,7 @@ module ConnectToSage
     def attribute_map(attr_map, alternatives)
       attribute = alternatives.first
       if attr_map.has_key?(attribute)
-        return process_attribute(attr_map[attribute])
+        return process_attribute(attribute, attr_map[attribute])
       end
       
       alternatives.map! { |a| a.is_a?(Symbol) ? "#{attr_map[:prefix]}#{a.to_s}#{attr_map[:suffix]}".to_sym : a}
@@ -186,25 +186,24 @@ module ConnectToSage
       if alternatives.empty?
         __send__(attribute)
       else
-        process_attribute(alternatives.first)
+        process_attribute(attribute, alternatives.first)
       end
     end
     
-    def process_attribute(attribute)
-      result = if attribute.is_a?(Symbol)
-        r = (/^to_.*_xml$/ =~ attribute.to_s ? __send__(attribute, @sage_xml_builder) : __send__(attribute))
-        if r.kind_of?(ActiveRecord::Base) and r.methods.include?("to_#{attribute.to_s}_xml")
-          r.__send__("to_#{attribute.to_s}_xml", @sage_xml_builder)
-        else
-          r
-        end
-      elsif attribute.is_a?(Proc)
-        attribute.call
+    def process_attribute(attribute, target)
+      result = if target.is_a?(Symbol)
+        (/^to_.*_xml$/ =~ target.to_s ? __send__(target, @sage_xml_builder) : __send__(target))
+      elsif target.is_a?(Proc)
+        target.call(self)
       else
-        attribute
+        target
       end
       
-      result.methods.include?('xmlschema') ? result.xmlschema : result
+      if result.kind_of?(ActiveRecord::Base) and result.methods.include?("to_#{attribute.to_s}_xml")
+        result.__send__("to_#{attribute.to_s}_xml", @sage_xml_builder)
+      else
+        result.methods.include?('xmlschema') ? result.xmlschema : result
+      end
     end
     
     def has_method?(method_name)
