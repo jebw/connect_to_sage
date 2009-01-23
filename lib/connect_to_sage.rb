@@ -180,7 +180,7 @@ module ConnectToSage
         return process_attribute(attr_map[attribute])
       end
       
-      alternatives.map! { |a| "#{attr_map[:prefix]}#{a.to_s}#{attr_map[:suffix]}".to_sym}
+      alternatives.map! { |a| a.is_a?(Symbol) ? "#{attr_map[:prefix]}#{a.to_s}#{attr_map[:suffix]}".to_sym : a}
       
       alternatives.reject! { |a| a.is_a?(Symbol) and not has_method?(a) }
       if alternatives.empty?
