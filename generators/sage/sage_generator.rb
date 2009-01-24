@@ -31,7 +31,9 @@ class SageGenerator < Rails::Generator::Base
                              :order_join_table => @order_join_table, :order_model_table => @order_model_table },
                              :migration_file_name => "create_sage_models"
       end
-      unless options[:no_download]
+      if options[:no_download]
+        m.template 'download.xml.builder', File.join('app', 'views', 'sage', 'download.xml.builder')
+      else
         m.template 'sage_download.rb', File.join('app', 'models', 'sage_download.rb')
         m.template 'sage_import.rb', File.join('app', 'models', 'sage_import.rb')
       end

@@ -2,22 +2,25 @@ class <%= controller_name %> < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :authenticate
   
-  <% unless options[:no_upload] %>
   def upload
+  <% unless options[:no_upload] %>
     # UPLOAD CODE
-  end
   <% end -%>
+    render :nothing => true
+  end
   
-  <% unless options[:no_download] %>
   def download
+  <% unless options[:no_download] %>
     render :xml => SageDownload.create!
+  <% end %>
   end
   
   def import
+  <% unless options[:no_download] %>
     SageImport.create!(:xml => request.body.read)
+  <% end -%>
     render :nothing => true
   end
-  <% end -%>
 
   private
   
