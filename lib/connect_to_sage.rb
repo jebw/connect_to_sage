@@ -88,29 +88,26 @@ module ConnectToSage
     end
     
     def sage_sales_order(attr_map = {})
-      @@so_map = attr_map
-      @@so_map_built = false
+      @@sales_order_map = attr_map
+      include AttributeMapper
       
-      include AttributeMapper      
       has_and_belongs_to_many :sage_downloads
       belongs_to :sage_import
             
       define_method "to_sales_order_xml" do |xml|
-        @@so_map_built || build_sales_order_map
+        @@sales_order_map ||= xml
               
         xml.SalesOrder do
-          to_sage_xml(@@so_map, xml)
+          xml.Id sales_order_map(:id)
+          xml.Forename sales_order_map(:forename)
+          xml.Surname sales_order_map(:surname)
+          xml.RandomField sales_order_map(:random_field) rescue NoMethodError
+          xml.Desc sales_order_map(:desc)
         end
       end
       
-      define_method "build_sales_order_map" do
-        map_attribute(@@so_map, 'Id')
-        map_attribute(@@so_map, 'Forename')
-        map_attribute(@@so_map, 'Surname') || unmapped_attribute('Surname')
-        map_attribute(@@so_map, 'RandomField')
-        map_attribute(@@so_map, 'Desc')
-        
-        @@so_map_built = true
+      define_method "sales_order_map" do |*alternatives|
+        attribute_map(@@sales_order_map, alternatives)
       end
       
     end
@@ -136,40 +133,6 @@ module ConnectToSage
   end
   
   module AttributeMapper
-    
-    def unmapped_attribute(attribute)
-      raise UnmappedAttributeError, 
-        "#{self.class.to_s} does not have a #{attribute} method, add one or add it to the attribute map"
-    end
-    
-    def map_attribute(attr_map, attribute, alternatives = [])
-      return true if attr_map.has_key?(attribute)
-      
-      needles = [ attribute, attribute.underscore, attribute.downcase ]
-      needles += alternatives if alternatives
-              
-      result = needles.find { |needle| methods.include?(needle) }
-      attr_map[attribute] = result.to_sym unless result.nil?
-      
-      attr_map.has_key?(attribute)
-    end
-    
-    def to_sage_xml (attr_map, xml = nil)
-      if xml.nil?
-        xml = Builder::XmlMarkup.new(:indent => 2)
-        xml.instruct!
-      end
-    
-      attr_map.each do |k,v|
-        next if v.nil?
-        
-        if v.is_a?(Symbol)
-          xml.__send__ k, __send__(v)
-        else
-          xml.__send__ k, v
-        end
-      end
-    end
     
     def attribute_map(attr_map, alternatives)
       attribute = alternatives.first
