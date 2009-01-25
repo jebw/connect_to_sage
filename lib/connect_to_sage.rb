@@ -116,23 +116,23 @@ module ConnectToSage
     end
     
     def sage_customer(attr_map = {})
-      @@c_map = attr_map
-      @@c_map_built = false
-      
+      @@customer_map = attr_map      
       include AttributeMapper
       
+      has_and_belongs_to_many :sage_downloads
+      belongs_to :sage_import
+      
       define_method "to_customer_xml" do |xml|
-        @@c_map_built || build_customer_map
+        @sage_xml_builder ||= xml
       
         xml.Customer do
-          to_sage_xml(@@c_map, xml)
+          xml.Id customer_map(:id)
+          xml.Name customer_map(:name)
         end
       end
       
-      define_method "build_customer_map" do
-        map_attribute(@@c_map, 'Id')
-      
-        @@c_map_built = true
+      define_method "customer_map" do |*alternatives|
+        attribute_map(@@customer_map, alternatives)
       end
     end
   
