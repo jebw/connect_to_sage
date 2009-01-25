@@ -119,9 +119,6 @@ module ConnectToSage
       @@customer_map = attr_map      
       include AttributeMapper
       
-      has_and_belongs_to_many :sage_downloads
-      belongs_to :sage_import
-      
       define_method "to_customer_xml" do |xml|
         @sage_xml_builder ||= xml
       
