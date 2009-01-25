@@ -121,7 +121,15 @@ module ConnectToSage
       
         xml.Customer do
           xml.Id customer_map(:id)
-          xml.Name customer_map(:name)
+          xml.CompanyName customer_map(:company_name)
+          xml.AccountReference customer_map(:account_reference)
+          xml.VatNumber customer_map(:vat_number)
+          xml.CustomerInvoiceAddress do
+            customer_map(:customer_invoice_address)
+          end
+          xml.CustomerDeliveryAddress do
+            customer_map(:customer_delivery_address)
+          end
         end
       end
       
@@ -129,6 +137,60 @@ module ConnectToSage
         attribute_map(@@customer_map, alternatives)
       end
     end
+    
+    def sage_customer_invoice_address(attr_map = {})
+      @@customer_invoice_address_map = attr_map
+      include AttributeMapper
+      
+      define_method "to_customer_invoice_address_xml" do |xml|
+        @sage_xml_builder ||= xml
+        
+        xml.Title customer_invoice_address_map(:title)
+        xml.Forename customer_invoice_address_map(:forename)
+        xml.Surname customer_invoice_address_map(:surname)
+        xml.Company customer_invoice_address_map(:company)
+        xml.Address1 customer_invoice_address_map(:address1)
+        xml.Address2 customer_invoice_address_map(:address2)
+        xml.Town customer_invoice_address_map(:town)
+        xml.Postcode customer_invoice_address_map(:postcode)
+        xml.County customer_invoice_address_map(:county)
+        xml.Country customer_invoice_address_map(:country)
+        xml.Telephone customer_invoice_address_map(:telephone)
+        xml.Email customer_invoice_address_map(:email)
+      end
+      
+      define_method "customer_invoice_address_map" do |*alternatives|
+        attribute_map(@@customer_invoice_address_map, alternatives)
+      end
+    end
+    
+    def sage_customer_delivery_address(attr_map = {})
+      @@customer_delivery_address_map = attr_map
+      include AttributeMapper
+      
+      define_method "to_customer_delivery_address_xml" do |xml|
+        @sage_xml_builder ||= xml
+          
+        xml.Title customer_delivery_address_map(:title)
+        xml.Forename customer_delivery_address_map(:forename)
+        xml.Surname customer_delivery_address_map(:surname)
+        xml.Company customer_delivery_address_map(:company)
+        xml.Address1 customer_delivery_address_map(:address1)
+        xml.Address2 customer_delivery_address_map(:address2)
+        xml.Town customer_delivery_address_map(:town)
+        xml.Postcode customer_delivery_address_map(:postcode)
+        xml.County customer_delivery_address_map(:county)
+        xml.Country customer_delivery_address_map(:country)
+        xml.Telephone customer_delivery_address_map(:telephone)
+        xml.Email customer_delivery_address_map(:email)
+      end
+      
+      define_method "customer_delivery_address_map" do |*alternatives|
+        attribute_map(@@customer_delivery_address_map, alternatives)
+      end
+    end
+    
+    
   
   end
   

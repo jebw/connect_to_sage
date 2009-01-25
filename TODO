@@ -7,5 +7,4 @@
 # Deal with uploaded images
 # Improve feedback at generate time
 # Split code for finding customers in generated controller out from generating the xml
-# Rewrite sage_sales_order and sage_customer to follow new map_attribute methods
 # Add sage_invoice_item, sage_sales_order_item, plus any other missing meta methods
