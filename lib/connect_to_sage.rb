@@ -31,10 +31,10 @@ module ConnectToSage
           xml.InvoiceDate invoice_map(:invoice_date, :created_at) rescue NoMethodError
           xml.InvoiceType invoice_map(:invoice_type) rescue NoMethodError
           xml.InvoiceAddress do
-            invoice_map(:invoice_address)
+            invoice_map(:invoice_address, :to_invoice_address_xml)
           end
           xml.InvoiceDeliveryAddress do
-            invoice_map(:invoice_delivery_address, :to_invoice_delivery_address_xml) rescue NoMethodError
+            invoice_map(:invoice_delivery_address, :to_invoice_delivery_address_xml)
           end
           xml.Courier invoice_map(:courier) rescue NoMethodError
           xml.SettlementDays invoice_map(:settlement_days) rescue NoMethodError
@@ -53,16 +53,7 @@ module ConnectToSage
     
     def sage_invoice_address(attr_map = {})
       @@invoice_address_map = attr_map
-      include AttributeMapper
-      
-      define_method "to_invoice_address_xml" do |xml|
-        @sage_xml_builder ||= xml
-        xml.AddressLine1 invoice_address_map(:address_line_1)
-        xml.AddressLine2 invoice_address_map(:address_line_2)
-        xml.Town invoice_address_map(:town)
-        xml.County invoice_address_map(:county)
-        xml.Postcode invoice_address_map(:postcode)
-      end
+      sage_contact_xml('invoice_address')
       
       define_method "invoice_address_map" do |*alternatives|
         attribute_map(@@invoice_address_map, alternatives)
@@ -71,16 +62,7 @@ module ConnectToSage
     
     def sage_invoice_delivery_address(attr_map = {})
       @@invoice_delivery_address_map = attr_map
-      include AttributeMapper
-      
-      define_method "to_invoice_delivery_address_xml" do |xml|
-        @sage_xml_builder ||= xml
-        xml.AddressLine1 invoice_delivery_address_map(:address_line_1)
-        xml.AddressLine2 invoice_delivery_address_map(:address_line_2)
-        xml.Town invoice_delivery_address_map(:town)
-        xml.County invoice_delivery_address_map(:county)
-        xml.Postcode invoice_delivery_address_map(:postcode)
-      end
+      sage_contact_xml('invoice_delivery_address')
       
       define_method "invoice_delivery_address_map" do |*alternatives|
         attribute_map(@@invoice_delivery_address_map, alternatives)
@@ -121,9 +103,9 @@ module ConnectToSage
       
         xml.Customer do
           xml.Id customer_map(:id)
-          xml.CompanyName customer_map(:company_name)
-          xml.AccountReference customer_map(:account_reference)
-          xml.VatNumber customer_map(:vat_number)
+          xml.CompanyName customer_map(:company_name) rescue NoMethodError
+          xml.AccountReference customer_map(:account_reference) rescue NoMethodError
+          xml.VatNumber customer_map(:vat_number) rescue NoMethodError
           xml.CustomerInvoiceAddress do
             customer_map(:customer_invoice_address)
           end
@@ -140,24 +122,7 @@ module ConnectToSage
     
     def sage_customer_invoice_address(attr_map = {})
       @@customer_invoice_address_map = attr_map
-      include AttributeMapper
-      
-      define_method "to_customer_invoice_address_xml" do |xml|
-        @sage_xml_builder ||= xml
-        
-        xml.Title customer_invoice_address_map(:title)
-        xml.Forename customer_invoice_address_map(:forename)
-        xml.Surname customer_invoice_address_map(:surname)
-        xml.Company customer_invoice_address_map(:company)
-        xml.Address1 customer_invoice_address_map(:address1)
-        xml.Address2 customer_invoice_address_map(:address2)
-        xml.Town customer_invoice_address_map(:town)
-        xml.Postcode customer_invoice_address_map(:postcode)
-        xml.County customer_invoice_address_map(:county)
-        xml.Country customer_invoice_address_map(:country)
-        xml.Telephone customer_invoice_address_map(:telephone)
-        xml.Email customer_invoice_address_map(:email)
-      end
+      sage_contact_xml('customer_invoice_address')
       
       define_method "customer_invoice_address_map" do |*alternatives|
         attribute_map(@@customer_invoice_address_map, alternatives)
@@ -166,31 +131,34 @@ module ConnectToSage
     
     def sage_customer_delivery_address(attr_map = {})
       @@customer_delivery_address_map = attr_map
-      include AttributeMapper
-      
-      define_method "to_customer_delivery_address_xml" do |xml|
-        @sage_xml_builder ||= xml
-          
-        xml.Title customer_delivery_address_map(:title)
-        xml.Forename customer_delivery_address_map(:forename)
-        xml.Surname customer_delivery_address_map(:surname)
-        xml.Company customer_delivery_address_map(:company)
-        xml.Address1 customer_delivery_address_map(:address1)
-        xml.Address2 customer_delivery_address_map(:address2)
-        xml.Town customer_delivery_address_map(:town)
-        xml.Postcode customer_delivery_address_map(:postcode)
-        xml.County customer_delivery_address_map(:county)
-        xml.Country customer_delivery_address_map(:country)
-        xml.Telephone customer_delivery_address_map(:telephone)
-        xml.Email customer_delivery_address_map(:email)
-      end
+      sage_contact_xml('customer_delivery_address')
       
       define_method "customer_delivery_address_map" do |*alternatives|
         attribute_map(@@customer_delivery_address_map, alternatives)
       end
     end
     
-    
+    def sage_contact_xml(contact_type)
+      include AttributeMapper
+      
+      define_method "to_#{contact_type}_xml" do |xml|
+        @sage_xml_builder ||= xml
+        contact_map = "#{contact_type}_map"
+          
+        xml.Title __send__(contact_map, :title) rescue NoMethodError
+        xml.Forename __send__(contact_map, :forename) rescue NoMethodError
+        xml.Surname __send__(contact_map, :surname) rescue NoMethodError
+        xml.Company __send__(contact_map, :company) rescue NoMethodError
+        xml.Address1 __send__(contact_map, :address1, :address_1, :address_line_1, :address_line1, :line1, :line_1) rescue NoMethodError
+        xml.Address2 __send__(contact_map, :address2, :address_2, :address_line_2, :address_line2, :line2, :line_2) rescue NoMethodError
+        xml.Town __send__(contact_map, :town) rescue NoMethodError
+        xml.Postcode __send__(contact_map, :postcode) rescue NoMethodError
+        xml.County __send__(contact_map, :county) rescue NoMethodError
+        xml.Country __send__(contact_map, :country) rescue NoMethodError
+        xml.Telephone __send__(contact_map, :telephone) rescue NoMethodError
+        xml.Email __send__(contact_map, :email) rescue NoMethodError
+      end
+    end
   
   end
   
