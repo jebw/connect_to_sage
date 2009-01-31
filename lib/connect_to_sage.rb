@@ -204,11 +204,11 @@ module ConnectToSage
       
       alternatives.map! { |a| a.is_a?(Symbol) ? "#{attr_map[:prefix]}#{a.to_s}#{attr_map[:suffix]}".to_sym : a}
       
-      alternatives.reject! { |a| a.is_a?(Symbol) and not has_method?(a) }
-      if alternatives.empty?
-        __send__(attribute)
+      valid_alternatives = alternatives.reject { |a| a.is_a?(Symbol) and not has_method?(a) }
+      if valid_alternatives.empty?
+        __send__(alternatives.first)
       else
-        process_attribute(attribute, alternatives.first)
+        process_attribute(attribute, valid_alternatives.first)
       end
     end
     
