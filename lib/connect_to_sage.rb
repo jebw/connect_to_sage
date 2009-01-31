@@ -107,10 +107,10 @@ module ConnectToSage
           xml.AccountReference customer_map(:account_reference) rescue NoMethodError
           xml.VatNumber customer_map(:vat_number) rescue NoMethodError
           xml.CustomerInvoiceAddress do
-            customer_map(:customer_invoice_address)
+            customer_map(:customer_invoice_address, :to_customer_invoice_address_xml)
           end
           xml.CustomerDeliveryAddress do
-            customer_map(:customer_delivery_address)
+            customer_map(:customer_delivery_address, :to_customer_delivery_address_xml)
           end
         end
       end
