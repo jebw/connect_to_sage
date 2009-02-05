@@ -2,6 +2,25 @@ module ConnectToSage
 
   module Invoices
 
+    def sage_invoice2(&attr_map)
+      @@invoice_map = AttrMapper.new(&attr_map)
+      
+      has_and_belongs_to_many :sage_downloads
+      belongs_to :sage_import
+      
+      define_method "to_invoice_xml" do |xml|
+        @sage_xml_builder ||= xml
+        
+        xml.Invoice do
+          @@invoice_map.match_for(self) do |m|
+            xml.Id m.match(:id, :sage_id)
+            xml.Forename m.match(:forename)
+            xml.Surname m.match(:surname)
+          end
+        end
+      end
+    end
+
     def sage_invoice(attr_map = {})
       @@invoice_map = attr_map
       

@@ -11,6 +11,7 @@ module ConnectToSage
       @obj = obj
       @map = Hash.new
       instance_eval &@map_proc
+      yield(self)
     end
     
     def match(attribute, *alternatives)
@@ -34,8 +35,8 @@ module ConnectToSage
       def method_missing(method, *args, &block)
         @map[method.to_sym] = case args.length
         when 0 then nil
-        when 1 then arguments.first
-        else arguments          
+        when 1 then args.first
+        else args          
         end
       end
 
