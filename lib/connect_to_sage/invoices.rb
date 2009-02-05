@@ -2,7 +2,9 @@ module ConnectToSage
 
   module Invoices
 
-    def sage_invoice2(&attr_map)
+    def sage_invoice(&attr_map)
+      attr_accessor :sage_xml_builder
+    
       @@invoice_map = AttrMapper.new(&attr_map)
       
       has_and_belongs_to_many :sage_downloads
@@ -14,54 +16,32 @@ module ConnectToSage
         xml.Invoice do
           @@invoice_map.match_for(self) do |m|
             xml.Id m.match(:id, :sage_id)
-            xml.Forename m.match(:forename)
-            xml.Surname m.match(:surname)
+            xml.CustomerId m.match(:customer_id)
+            xml.InvoiceNumber m.match(:invoice_number) rescue UnmappedAttribute
+            xml.CustomerOrderNumber m.match(:customer_order_number) rescue UnmappedAttribute
+            xml.AccountReference m.match(:account_reference) rescue UnmappedAttribute
+            xml.OrderNumber m.match(:order_number, :id)# rescue UnmappedAttribute
+            xml.ForeignRate m.match(:foreign_rate) rescue UnmappedAttribute
+            xml.Currency m.match(:currency) rescue UnmappedAttribute
+            xml.Notes1 m.match(:notes1) rescue UnmappedAttribute
+            xml.CurrencyUsed m.match(:currency_used) rescue UnmappedAttribute
+            xml.InvoiceDate m.match(:invoice_date, :created_at) rescue UnmappedAttribute
+            xml.InvoiceType m.match(:invoice_type) rescue UnmappedAttribute
+            xml.InvoiceAddress do
+              m.match(:invoice_address, :to_invoice_address_xml)
+            end
+            xml.InvoiceDeliveryAddress do
+              m.match(:invoice_delivery_address, :to_invoice_delivery_address_xml)
+            end
+            xml.Courier m.match(:courier) rescue UnmappedAttribute
+            xml.SettlementDays m.match(:settlement_days) rescue UnmappedAttribute
+            xml.SettlementDiscount m.match(:settlement_discount) rescue UnmappedAttribute
+            xml.GlobalTaxCode m.match(:global_tax_code) rescue UnmappedAttribute
+            xml.GlobalDepartment m.match(:global_department) rescue UnmappedAttribute
+            xml.PaymentAmount m.match(:payment_amount) rescue UnmappedAttribute
           end
         end
       end
-    end
-
-    def sage_invoice(attr_map = {})
-      @@invoice_map = attr_map
-      
-      include AttributeMapper      
-      has_and_belongs_to_many :sage_downloads
-      belongs_to :sage_import
-      
-      define_method "to_invoice_xml" do |xml|
-        @sage_xml_builder ||= xml
-        xml.Invoice do
-          xml.Id invoice_map(:id)
-          xml.CustomerId invoice_map(:customer_id)
-          xml.InvoiceNumber invoice_map(:invoice_number) rescue NoMethodError
-          xml.CustomerOrderNumber invoice_map(:customer_order_number) rescue NoMethodError
-          xml.AccountReference invoice_map(:account_reference) rescue NoMethodError
-          xml.OrderNumber invoice_map(:order_number, :id)# rescue NoMethodError
-          xml.ForeignRate invoice_map(:foreign_rate) rescue NoMethodError
-          xml.Currency invoice_map(:currency) rescue NoMethodError
-          xml.Notes1 invoice_map(:notes1) rescue NoMethodError
-          xml.CurrencyUsed invoice_map(:currency_used) rescue NoMethodError
-          xml.InvoiceDate invoice_map(:invoice_date, :created_at) rescue NoMethodError
-          xml.InvoiceType invoice_map(:invoice_type) rescue NoMethodError
-          xml.InvoiceAddress do
-            invoice_map(:invoice_address, :to_invoice_address_xml)
-          end
-          xml.InvoiceDeliveryAddress do
-            invoice_map(:invoice_delivery_address, :to_invoice_delivery_address_xml)
-          end
-          xml.Courier invoice_map(:courier) rescue NoMethodError
-          xml.SettlementDays invoice_map(:settlement_days) rescue NoMethodError
-          xml.SettlementDiscount invoice_map(:settlement_discount) rescue NoMethodError
-          xml.GlobalTaxCode invoice_map(:global_tax_code) rescue NoMethodError
-          xml.GlobalDepartment invoice_map(:global_department) rescue NoMethodError
-          xml.PaymentAmount invoice_map(:payment_amount) rescue NoMethodError
-        end
-      end
-      
-      define_method "invoice_map" do |*alternatives|
-        attribute_map(@@invoice_map, alternatives)
-      end
-      
     end
     
     def sage_invoice_address(attr_map = {})
