@@ -8,3 +8,5 @@
 # Improve feedback at generate time
 # Split code for finding customers in generated controller out from generating the xml
 # Add sage_invoice_item, sage_sales_order_item, plus any other missing meta methods
+# Add back in prefix/suffix support to attr_mapper
+# move all sage_invoice/sage_sales_order/sage_customer over to new attr mapper code

@@ -17,13 +17,16 @@ module ConnectToSage
     def match(attribute, *alternatives)
       if @map.has_key?(attribute)
         @map[attribute]
-      elsif obj.respond_to?(attribute)
-        obj.__send__(attribute)
       else
+        alternatives.unshift(attribute)
         alternatives.reject! { |a| a.is_a?(Symbol) and !obj.respond_to?(a) }
         raise UnmappedAttribute.new(obj, attribute) if alternatives.empty?
         if alternatives.first.is_a?(Symbol)
-          obj.__send(alternatives.first)
+          if /^to_.*_xml$/ =~ alternatives.first.to_s
+            obj.__send__(alternatives.first, obj.sage_xml_builder)
+          else
+            obj.__send__(alternatives.first)
+          end
         else
           alternatives.first
         end
