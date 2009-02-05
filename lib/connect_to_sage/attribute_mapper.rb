@@ -10,7 +10,7 @@ module ConnectToSage
       extend Customers
       alternatives.map! { |a| a.is_a?(Symbol) ? "#{attr_map[:prefix]}#{a.to_s}#{attr_map[:suffix]}".to_sym : a}
       
-      valid_alternatives = alternatives.reject { |a| a.is_a?(Symbol) and not has_method?(a) }
+      valid_alternatives = alternatives.reject { |a| a.is_a?(Symbol) and not respond_to?(a) }
       if valid_alternatives.empty?
         __send__(alternatives.first)
       else
@@ -27,15 +27,15 @@ module ConnectToSage
         target
       end
       
-      if result.kind_of?(ActiveRecord::Base) and result.methods.include?("to_#{attribute.to_s}_xml")
+      if result.kind_of?(ActiveRecord::Base) and result.respond_to?("to_#{attribute.to_s}_xml")
         result.__send__("to_#{attribute.to_s}_xml", @sage_xml_builder)
       else
-        result.methods.include?('xmlschema') ? result.xmlschema : result
+        begin
+          result.xmlschema 
+        rescue NoMethodError 
+          result
+        end
       end
-    end
-    
-    def has_method?(method_name)
-      methods.include?(method_name.to_s)
     end
     
   end

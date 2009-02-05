@@ -22,7 +22,7 @@ module ConnectToSage
           end
         end
         
-        if self.methods.include?('invoices') and not invoices.empty?
+        if self.respond_to?(:invoices) and not invoices.empty?
           x.Invoices do
             invoices.each do |invoice|
               invoice.to_invoice_xml(x)
@@ -30,7 +30,7 @@ module ConnectToSage
           end
         end
         
-        if self.methods.include?('sales_orders') and not sales_orders.empty?
+        if self.respond_to?(:sales_orders) and not sales_orders.empty?
           x.SalesOrders do
             sales_orders.each do |sales_order|
               sales_order.to_sales_order_xml(x)
