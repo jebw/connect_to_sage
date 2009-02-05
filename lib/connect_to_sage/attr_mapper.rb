@@ -32,10 +32,14 @@ module ConnectToSage
         end
       end
       
-      begin
-        result.xmlschema
-      rescue NoMethodError
-        result
+      if result.kind_of?(ActiveRecord::Base) and result.respond_to?("to_#{attribute.to_s}_xml")
+        result.__send__("to_#{attribute.to_s}_xml", obj.sage_xml_builder)
+      else
+        begin
+          result.xmlschema 
+        rescue NoMethodError 
+          result
+        end
       end
     end
     
