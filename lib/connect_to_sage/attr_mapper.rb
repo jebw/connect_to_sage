@@ -15,7 +15,7 @@ module ConnectToSage
     end
     
     def match(attribute, *alternatives)
-      if @map.has_key?(attribute)
+      result = if @map.has_key?(attribute)
         @map[attribute]
       else
         alternatives.unshift(attribute)
@@ -30,6 +30,12 @@ module ConnectToSage
         else
           alternatives.first
         end
+      end
+      
+      begin
+        result.xmlschema
+      rescue NoMethodError
+        result
       end
     end
     
