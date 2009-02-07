@@ -20,6 +20,9 @@ module ConnectToSage
         @map[attribute]
       else
         alternatives.unshift(attribute)
+        alternatives.map! do |a| 
+          a.is_a?(Symbol) ? "#{@options[:prefix]}#{a.to_s}#{@options[:suffix]}".to_sym : a
+        end
         alternatives.reject! { |a| a.is_a?(Symbol) and !obj.respond_to?(a) }
         raise UnmappedAttribute.new(obj, attribute) if alternatives.empty?
         if alternatives.first.is_a?(Symbol)
