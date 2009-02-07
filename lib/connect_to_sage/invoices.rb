@@ -2,10 +2,10 @@ module ConnectToSage
 
   module Invoices
 
-    def sage_invoice(&attr_map)
+    def sage_invoice(options = {}, &attr_map)
       attr_accessor :sage_xml_builder
     
-      @@invoice_map = AttrMapper.new(&attr_map)
+      @@invoice_map = AttrMapper.new(options, &attr_map)
       
       has_and_belongs_to_many :sage_downloads
       belongs_to :sage_import
@@ -44,9 +44,9 @@ module ConnectToSage
       end
     end
     
-    def sage_invoice_address(&attr_map)
+    def sage_invoice_address(options = {}, &attr_map)
       include Contact
-      @@invoice_address_map = AttrMapper.new(&attr_map)
+      @@invoice_address_map = AttrMapper.new(options, &attr_map)
       
       define_method "to_invoice_address_xml" do |xml|
         @sage_xml_builder ||= xml
@@ -57,9 +57,9 @@ module ConnectToSage
       end      
     end
     
-    def sage_invoice_delivery_address(&attr_map)
+    def sage_invoice_delivery_address(options = {}, &attr_map)
       include Contact
-      @@invoice_delivery_address_map = AttrMapper.new(&attr_map)
+      @@invoice_delivery_address_map = AttrMapper.new(options, &attr_map)
       
       define_method "to_invoice_delivery_address_xml" do |xml|
         @sage_xml_builder ||= xml

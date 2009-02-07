@@ -3,14 +3,15 @@ module ConnectToSage
   class AttrMapper
     attr_reader :obj
     
-    def initialize(&block)
+    def initialize(options = {}, &block)
+      @options = options
       @map_proc = block
     end
     
     def match_for(obj)
       @obj = obj
       @map = Hash.new
-      instance_eval &@map_proc
+      instance_eval &@map_proc unless @map_proc.nil?
       yield(self)
     end
     

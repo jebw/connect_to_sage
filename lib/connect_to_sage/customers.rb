@@ -28,9 +28,9 @@ module ConnectToSage
       end
     end
     
-    def sage_customer_invoice_address(&attr_map)
+    def sage_customer_invoice_address(options = {}, &attr_map)
       include Contact
-      @@customer_invoice_address_map = AttrMapper.new(&attr_map)
+      @@customer_invoice_address_map = AttrMapper.new(options, &attr_map)
       
       define_method "to_customer_invoice_address_xml" do |xml|
         @sage_xml_builder ||= xml
@@ -41,9 +41,9 @@ module ConnectToSage
       end
     end
     
-    def sage_customer_delivery_address(&attr_map)
+    def sage_customer_delivery_address(options = {}, &attr_map)
       include Contact
-      @@customer_delivery_address_map = AttrMapper.new(&attr_map)
+      @@customer_delivery_address_map = AttrMapper.new(options, &attr_map)
       
       define_method "to_customer_delivery_address_xml" do |xml|
         @sage_xml_builder ||= xml
