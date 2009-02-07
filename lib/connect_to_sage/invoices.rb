@@ -44,21 +44,29 @@ module ConnectToSage
       end
     end
     
-    def sage_invoice_address(attr_map = {})
-      @@invoice_address_map = attr_map
-      sage_contact_xml('invoice_address')
+    def sage_invoice_address(&attr_map)
+      include ConnectToSage::Contact
+      @@invoice_address_map = AttrMapper.new(&attr_map)
       
-      define_method "invoice_address_map" do |*alternatives|
-        attribute_map(@@invoice_address_map, alternatives)
-      end
+      define_method "to_invoice_address_xml" do |xml|
+        @sage_xml_builder ||= xml
+      
+        @@invoice_address_map.match_for(self) do |m|
+          sage_contact_xml(xml, m)
+        end
+      end      
     end
     
-    def sage_invoice_delivery_address(attr_map = {})
-      @@invoice_delivery_address_map = attr_map
-      sage_contact_xml('invoice_delivery_address')
+    def sage_invoice_delivery_address(&attr_map)
+      include ConnectToSage::Contact
+      @@invoice_delivery_address_map = AttrMapper.new(&attr_map)
       
-      define_method "invoice_delivery_address_map" do |*alternatives|
-        attribute_map(@@invoice_delivery_address_map, alternatives)
+      define_method "to_invoice_delivery_address_xml" do |xml|
+        @sage_xml_builder ||= xml
+        
+        @@invoice_delivery_address_map.match_for(self) do |m|
+          sage_contact_xml(xml, m)
+        end
       end
     end
 

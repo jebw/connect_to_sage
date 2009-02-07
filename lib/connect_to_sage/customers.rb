@@ -15,10 +15,10 @@ module ConnectToSage
           xml.AccountReference customer_map(:account_reference) rescue NoMethodError
           xml.VatNumber customer_map(:vat_number) rescue NoMethodError
           xml.CustomerInvoiceAddress do
-            customer_map(:customer_invoice_address, :to_customer_invoice_address_xml)
+            #customer_map(:customer_invoice_address, :to_customer_invoice_address_xml)
           end
           xml.CustomerDeliveryAddress do
-            customer_map(:customer_delivery_address, :to_customer_delivery_address_xml)
+            #customer_map(:customer_delivery_address, :to_customer_delivery_address_xml)
           end
         end
       end
@@ -30,7 +30,7 @@ module ConnectToSage
     
     def sage_customer_invoice_address(attr_map = {})
       @@customer_invoice_address_map = attr_map
-      sage_contact_xml('customer_invoice_address')
+      #sage_contact_xml('customer_invoice_address')
       
       define_method "customer_invoice_address_map" do |*alternatives|
         attribute_map(@@customer_invoice_address_map, alternatives)
@@ -39,7 +39,7 @@ module ConnectToSage
     
     def sage_customer_delivery_address(attr_map = {})
       @@customer_delivery_address_map = attr_map
-      sage_contact_xml('customer_delivery_address')
+      #sage_contact_xml('customer_delivery_address')
       
       define_method "customer_delivery_address_map" do |*alternatives|
         attribute_map(@@customer_delivery_address_map, alternatives)
