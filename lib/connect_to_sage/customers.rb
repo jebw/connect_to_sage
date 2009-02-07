@@ -2,29 +2,27 @@ module ConnectToSage
 
   module Customers
   
-    def sage_customer(attr_map = {})
-      @@customer_map = attr_map      
-      include AttributeMapper
+    def sage_customer(options = {}, &attr_map)
+      attr_reader :sage_xml_builder
+      @@customer_map = AttrMapper.new(options, &attr_map)
       
       define_method "to_customer_xml" do |xml|
         @sage_xml_builder ||= xml
       
         xml.Customer do
-          xml.Id customer_map(:id)
-          xml.CompanyName customer_map(:company_name) rescue NoMethodError
-          xml.AccountReference customer_map(:account_reference) rescue NoMethodError
-          xml.VatNumber customer_map(:vat_number) rescue NoMethodError
-          xml.CustomerInvoiceAddress do
-            customer_map(:customer_invoice_address, :to_customer_invoice_address_xml)
-          end
-          xml.CustomerDeliveryAddress do
-            customer_map(:customer_delivery_address, :to_customer_delivery_address_xml)
+          @@customer_map.match_for(self) do |m|
+            xml.Id m.match(:id)
+            xml.CompanyName m.match(:company_name) rescue UnmappedAttribute
+            xml.AccountReference m.match(:account_reference) rescue UnmappedAttribute
+            xml.VatNumber m.match(:vat_number) rescue UnmappedAttribute
+            xml.CustomerInvoiceAddress do
+              m.match(:customer_invoice_address, :to_customer_invoice_address_xml)
+            end
+            xml.CustomerDeliveryAddress do
+              m.match(:customer_delivery_address, :to_customer_delivery_address_xml)
+            end
           end
         end
-      end
-      
-      define_method "customer_map" do |*alternatives|
-        attribute_map(@@customer_map, alternatives)
       end
     end
     

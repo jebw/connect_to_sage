@@ -3,7 +3,7 @@ module ConnectToSage
   module Invoices
 
     def sage_invoice(options = {}, &attr_map)
-      attr_accessor :sage_xml_builder
+      attr_reader :sage_xml_builder
     
       @@invoice_map = AttrMapper.new(options, &attr_map)
       
